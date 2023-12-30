@@ -1,0 +1,261 @@
+{
+	"info": {
+		"_postman_id": "aa5369cf-4506-46a2-9536-c2eaf1666717",
+		"name": "СКАН-Интерфакс",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21592571"
+	},
+	"item": [
+		{
+			"name": "Авторизация",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Если в ответе есть ключ accessToken, то записать его значение в test_auth\", function () {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    pm.collectionVariables.set(\"test_auth\", jsonData.accessToken);",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"login\": \"{{test_login}}\",\n  \"password\": \"{{test_password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_URL}}api/v1/account/login",
+					"host": [
+						"{{base_URL}}api"
+					],
+					"path": [
+						"v1",
+						"account",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Балланс",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"let Jsondata = JSON.parse(responseBody)",
+							"pm.collectionVariables.set(\"current_balance\" , Jsondata.balance);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_URL}}api/v1/account/balance",
+					"host": [
+						"{{base_URL}}api"
+					],
+					"path": [
+						"v1",
+						"account",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получить публикации",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = JSON.parse(responseBody)",
+							"pm.collectionVariables.set(\"subjects_name1\", jsonData.subjects[0].name);",
+							"pm.collectionVariables.set(\"subjects_name2\", jsonData.subjects[1].name);",
+							"pm.collectionVariables.set(\"subjects_name3\", jsonData.subjects[2].name);",
+							"pm.collectionVariables.set(\"subjects_total\", jsonData.totalCount);",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://gateway.scan-interfax.ru/api/v1/entities/subjects?index=0&pageSize=5",
+					"protocol": "https",
+					"host": [
+						"gateway",
+						"scan-interfax",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v1",
+						"entities",
+						"subjects"
+					],
+					"query": [
+						{
+							"key": "index",
+							"value": "0"
+						},
+						{
+							"key": "pageSize",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получение документов",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ids\": [\n    \"1:0JPQqdGM0JNWCdCzf2Jt0LHQotGV0ZUh0ZbRlBXCt0Je0JHQruKAnDcUXkZQ0YvQscKnehLRnNC1KtGK0Ll9BWLigLo/HXXCrhw=\",\n    \"1:fmYoHEjQrRbQhz3RiUtm4oCh0JLRmtCLIyU10IzigqzRgGjQmCoR0JFg0YRhwrVzN9CxDUM50KcpdTbRiNCLwpjRkuKAphXRkVxh0JU50K5uWdC50L7RjX0C0KwQRsKp\"\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gateway.scan-interfax.ru/api/v1/documents",
+					"protocol": "https",
+					"host": [
+						"gateway",
+						"scan-interfax",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v1",
+						"documents"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_key}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "auth_key",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIyNGFmMzBiMy1jZTgyLWVkMTEtODI3NS04NzJjODBhZjI3NTMiLCJuYmYiOjE2OTc0NzIyMDAsImV4cCI6MTY5NzU1ODYwMCwiaXNzIjoiU2NhbkdhdGV3YXkiLCJhdWQiOiJzZl9zdHVkZW50OCJ9.pr4R-VkCCh6khivQkr1XVzMgSWEFIekWjENFMOTHPxg",
+			"type": "string"
+		},
+		{
+			"key": "test_login",
+			"value": "sf_student8",
+			"type": "string"
+		},
+		{
+			"key": "test_password",
+			"value": "5QB0KM/",
+			"type": "string"
+		},
+		{
+			"key": "base_URL",
+			"value": "https://gateway.scan-interfax.ru/",
+			"type": "string"
+		},
+		{
+			"key": "current_balance",
+			"value": "774193"
+		},
+		{
+			"key": "test_auth",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIyNGFmMzBiMy1jZTgyLWVkMTEtODI3NS04NzJjODBhZjI3NTMiLCJuYmYiOjE2OTc0NzQzNDQsImV4cCI6MTY5NzU2MDc0NCwiaXNzIjoiU2NhbkdhdGV3YXkiLCJhdWQiOiJzZl9zdHVkZW50OCJ9.BcmdZao3Sfvqj9ddt-5pseRLPhhZaSzEq451wOZWNHc"
+		},
+		{
+			"key": "subjects_name1",
+			"value": "Административная и хозяйственная деятельность"
+		},
+		{
+			"key": "subjects_name2",
+			"value": "Административные правонарушения"
+		},
+		{
+			"key": "subjects_name3",
+			"value": "Отставки и назначения"
+		},
+		{
+			"key": "subjects_total",
+			"value": "698"
+		}
+	]
+}
